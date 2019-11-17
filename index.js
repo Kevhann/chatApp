@@ -1,4 +1,5 @@
 const app = require("express")()
+app.use(express.static("build"))
 const http = require("http").createServer(app)
 const io = require("socket.io")(http)
 var active = 0
@@ -23,7 +24,7 @@ io.on("connection", socket => {
   })
 })
 
-const port = 4001
-http.listen(port, () => {
-  console.log(`listening on port ${port}`)
+const PORT = process.env.PORT || 4001
+http.listen(PORT, () => {
+  console.log(`listening on port ${PORT}`)
 })
