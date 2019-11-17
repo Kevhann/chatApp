@@ -1,5 +1,9 @@
-const app = require("express")()
-app.use(express.static("build"))
+const express = require("express")
+const app = express()
+const cors = require("cors")
+app.use(cors())
+
+// app.use(express.static("build"))
 const http = require("http").createServer(app)
 const io = require("socket.io")(http)
 var active = 0
@@ -23,6 +27,10 @@ io.on("connection", socket => {
     console.log(`user ${active} id ${socket.id} disconnected`)
   })
 })
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("build"))
+}
 
 const PORT = process.env.PORT || 4001
 http.listen(PORT, () => {
