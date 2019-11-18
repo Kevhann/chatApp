@@ -1,6 +1,7 @@
 const express = require("express")
 const app = express()
 const cors = require("cors")
+const axios = require("axios")
 app.use(cors())
 
 // app.use(express.static("build"))
@@ -29,6 +30,7 @@ io.on("connection", socket => {
 })
 
 if (process.env.NODE_ENV === "production") {
+  console.log("lmao")
   app.use(express.static("build"))
 }
 
