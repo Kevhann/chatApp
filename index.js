@@ -30,10 +30,10 @@ io.on("connection", socket => {
 })
 
 // heroku
-if (process.env.NODE_ENV === "production") {
-  console.log("in production")
-  app.use(express.static("build"))
-}
+// if (process.env.NODE_ENV === "production") {
+console.log("in production")
+app.use(express.static("build"))
+// }
 
 const PORT = process.env.PORT || 4001
 http.listen(PORT, () => {
