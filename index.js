@@ -29,6 +29,7 @@ io.on("connection", socket => {
   })
 })
 
+// heroku
 if (process.env.NODE_ENV === "production") {
   console.log("lmao")
   app.use(express.static("build"))
