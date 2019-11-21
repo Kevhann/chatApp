@@ -29,7 +29,7 @@ const CreateUser = ({ user, socket, setUser, addMessageToLog }) => {
     // setUser({ name: namePlaceHolder, color })
     addMessageToLog(message)
 
-    socket.emit("SENT_MESSAGE", message)
+    socket.emit("SET_NAME_TAG", message)
   }
 
   const handleFormChange = event => {

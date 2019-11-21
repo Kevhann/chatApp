@@ -8,13 +8,16 @@ app.use(cors())
 const http = require("http").createServer(app)
 const io = require("socket.io")(http)
 var active = 0
+var users = {}
 
 io.on("connection", socket => {
   console.log(`CONNECTED user ${active} id ${socket.id}`)
   active++
-  socket.on("hello", data => {
-    console.log(data)
-    console.log("socket:", socket.id)
+
+  socket.on("SET_NAME_TAG", user => {
+    console.log("Joined user:", user)
+    users[socket.id] = user
+    socket.broadcast.emit("BROADCAST_MESSAGE", user)
   })
 
   socket.on("SENT_MESSAGE", message => {
@@ -26,6 +29,14 @@ io.on("connection", socket => {
   socket.on("disconnect", () => {
     active--
     console.log(`user ${active} id ${socket.id} disconnected`)
+
+    var disconnected = users[socket.id]
+    if (disconnected) {
+      disconnected.content = "Has left the chat"
+      console.log("disconnected:", disconnected)
+
+      socket.broadcast.emit("BROADCAST_MESSAGE", disconnected)
+    }
   })
 })
 
