@@ -13,7 +13,7 @@ const MessagePrompt = ({
 }) => {
   const handleMessageSubmit = event => {
     event.preventDefault()
-    if (!message.content) {
+    if (!message) {
       return
     }
     const time = getCurrentTimeStamp()
@@ -21,7 +21,7 @@ const MessagePrompt = ({
     console.log("user:", user)
     console.log("message:", message)
     const messageObject = {
-      ...message,
+      content: message,
       time,
       from: user.name,
       color: user.color
@@ -29,11 +29,11 @@ const MessagePrompt = ({
     addMessageToLog(messageObject)
     socket.emit("SENT_MESSAGE", messageObject)
 
-    setMessage({ ...message, content: "" })
+    setMessage("")
   }
 
   const handleMessageChange = event => {
-    setMessage({ ...message, content: event.target.value })
+    setMessage(event.target.value)
   }
 
   return (
@@ -43,7 +43,7 @@ const MessagePrompt = ({
           placeholder="Send message"
           autoFocus={true}
           type="text"
-          value={message.content}
+          value={message}
           onChange={e => handleMessageChange(e)}
         ></input>
         <button onClick={e => handleMessageSubmit(e)}>send</button>

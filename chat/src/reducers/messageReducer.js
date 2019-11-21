@@ -1,7 +1,4 @@
-const messageReducer = (
-  state = { content: "", time: null, from: null },
-  action
-) => {
+const messageReducer = (state = "", action) => {
   switch (action.type) {
     case "SET_MESSAGE":
       return action.value
