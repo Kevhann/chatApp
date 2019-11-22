@@ -9,15 +9,30 @@ const http = require("http").createServer(app)
 const io = require("socket.io")(http)
 var active = 0
 var users = {}
+var names = {}
 
 io.on("connection", socket => {
   console.log(`CONNECTED user ${active} id ${socket.id}`)
   active++
 
-  socket.on("SET_NAME_TAG", user => {
-    console.log("Joined user:", user)
-    users[socket.id] = user
-    socket.broadcast.emit("BROADCAST_MESSAGE", user)
+  socket.on("SET_NAME_TAG", data => {
+    console.log("Joined user:", data)
+    console.log("name:", names[socket.id])
+
+    if (users[data.from]) {
+      const message = {
+        ...data,
+        content: "is in use, please choose a different tag",
+        color: "red"
+      }
+      io.to(socket.id).emit("BROADCAST_MESSAGE", message)
+    } else {
+      names[socket.id] = data.from
+      users[data.from] = data
+      console.log("else")
+      io.to(socket.id).emit("USER_CONNECTED", data)
+      socket.broadcast.emit("BROADCAST_MESSAGE", data)
+    }
   })
 
   socket.on("SENT_MESSAGE", message => {
@@ -30,12 +45,17 @@ io.on("connection", socket => {
     active--
     console.log(`user ${active} id ${socket.id} disconnected`)
 
-    var disconnected = users[socket.id]
-    if (disconnected) {
-      disconnected.content = "Has left the chat"
-      console.log("disconnected:", disconnected)
+    var disconnectedName = names[socket.id]
+    names[socket.id] = null
 
-      socket.broadcast.emit("BROADCAST_MESSAGE", disconnected)
+    if (disconnectedName) {
+      var disconnectedUser = users[disconnectedName]
+      users[disconnectedName] = null
+
+      disconnectedUser.content = "has left the chat"
+      console.log("disconnected:", disconnectedUser)
+
+      socket.broadcast.emit("BROADCAST_MESSAGE", disconnectedUser)
     }
   })
 })

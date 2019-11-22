@@ -15,7 +15,7 @@ const CreateUser = ({ user, socket, setUser, addMessageToLog }) => {
       console.log("2short")
       return
     }
-    setUser({ name: namePlaceHolder, color })
+    // setUser({ name: namePlaceHolder, color })
     const time = getCurrentTimeStamp()
     const content = "Joined the chat"
     const message = {
@@ -27,10 +27,16 @@ const CreateUser = ({ user, socket, setUser, addMessageToLog }) => {
     }
 
     // setUser({ name: namePlaceHolder, color })
-    addMessageToLog(message)
+    // addMessageToLog(message)
 
     socket.emit("SET_NAME_TAG", message)
   }
+
+  socket.on("USER_CONNECTED", user => {
+    console.log("user:", user)
+    setUser({ name: user.from, color: user.color })
+    addMessageToLog(user)
+  })
 
   const handleFormChange = event => {
     namePlaceHolder = event.target.value
