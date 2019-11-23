@@ -15,7 +15,7 @@ const CreateUser = ({ user, socket, setUser, addMessageToLog }) => {
       console.log("2short")
       return
     }
-    // setUser({ name: namePlaceHolder, color })
+
     const time = getCurrentTimeStamp()
     const content = "Joined the chat"
     const message = {
@@ -25,9 +25,6 @@ const CreateUser = ({ user, socket, setUser, addMessageToLog }) => {
       from: namePlaceHolder,
       color
     }
-
-    // setUser({ name: namePlaceHolder, color })
-    // addMessageToLog(message)
 
     socket.emit("SET_NAME_TAG", message)
   }

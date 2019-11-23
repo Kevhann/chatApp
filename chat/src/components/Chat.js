@@ -7,7 +7,7 @@ import { connect } from "react-redux"
 const Chat = ({ user }) => {
   return (
     <div className="mainChat">
-      <MessageLog class="messageLog"></MessageLog>
+      <MessageLog></MessageLog>
       {user ? <MessagePrompt></MessagePrompt> : <CreateUser></CreateUser>}
     </div>
   )

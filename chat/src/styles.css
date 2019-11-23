@@ -2,6 +2,8 @@
   height: 500px;
   width: 100%;
   overflow-y: scroll;
+  max-width: 40ch;
+  overflow-wrap: break-word;
   padding-left: 0;
 }
 .mainChat {
