@@ -1,10 +1,12 @@
 import React from "react"
-import { setUser } from "../reducers/userReducer"
-import { addMessageToLog } from "../reducers/messageLogReducer"
+
 import { connect } from "react-redux"
 import { randomColor, getCurrentTimeStamp } from "../utils/utils"
+import { Modal, Form, Button, Alert } from "react-bootstrap"
+import { setShowAlert, setShowLogin } from "../reducers/loginReducer"
 
-const CreateUser = ({ user, socket, setUser, addMessageToLog }) => {
+const CreateUser = ({ socket, login, setShowLogin, setShowAlert }) => {
+  console.log("login:", login)
   const color = randomColor()
   let namePlaceHolder = ""
 
@@ -29,34 +31,47 @@ const CreateUser = ({ user, socket, setUser, addMessageToLog }) => {
     socket.emit("SET_NAME_TAG", message)
   }
 
-  socket.on("USER_CONNECTED", user => {
-    console.log("user:", user)
-    setUser({ name: user.from, color: user.color })
-    addMessageToLog(user)
-  })
-
   const handleFormChange = event => {
     namePlaceHolder = event.target.value
   }
 
   return (
-    <div>
-      <form onSubmit={event => handleFormSubmit(event)}>
-        <input
-          placeholder="Set nametag"
-          onChange={event => handleFormChange(event)}
-          type="text"
-        ></input>
-      </form>
-    </div>
+    <Modal
+      show={login.showLogin}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Welcome to my chat application
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form onSubmit={event => handleFormSubmit(event)}>
+          <Form.Group>
+            <Form.Label>Choose nametag</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter tag"
+              onChange={event => handleFormChange(event)}
+            />
+            <Form.Text className="text-muted">Tag must be unique</Form.Text>
+          </Form.Group>
+        </Form>
+        <Alert variant="warning" show={login.showAlert}>
+          Name already in use
+        </Alert>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={event => handleFormSubmit(event)}>Choose tag</Button>
+      </Modal.Footer>
+    </Modal>
   )
 }
 const mapStateToProps = state => ({
-  user: state.userReducer,
-  socket: state.socketReducer
+  socket: state.socketReducer,
+  login: state.loginReducer
 })
-const mapDispatchToProps = {
-  setUser,
-  addMessageToLog
-}
-export default connect(mapStateToProps, mapDispatchToProps)(CreateUser)
+
+export default connect(mapStateToProps)(CreateUser)

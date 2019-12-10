@@ -15,6 +15,8 @@ io.on("connection", socket => {
   console.log(`CONNECTED user ${active} id ${socket.id}`)
   active++
 
+  io.to(socket.id).emit("ACTIVE_USERS_ON_CONNECTION", names)
+
   socket.on("SET_NAME_TAG", data => {
     console.log("Joined user:", data)
     console.log("name:", names[socket.id])
@@ -25,13 +27,13 @@ io.on("connection", socket => {
         content: "is in use, please choose a different tag",
         color: "red"
       }
-      io.to(socket.id).emit("BROADCAST_MESSAGE", message)
+      io.to(socket.id).emit("USERNAME_TAKEN", message)
     } else {
       names[socket.id] = data.from
       users[data.from] = data
       console.log("else")
-      io.to(socket.id).emit("USER_CONNECTED", data)
-      socket.broadcast.emit("BROADCAST_MESSAGE", data)
+      io.to(socket.id).emit("USERNAME_ACCEPTED", data)
+      socket.broadcast.emit("NEW_USER_CONNECTED", data)
     }
   })
 

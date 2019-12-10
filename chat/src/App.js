@@ -3,14 +3,29 @@ import io from "socket.io-client"
 
 import Chat from "./components/Chat"
 import { addMessageToLog } from "./reducers/messageLogReducer"
+import { setUser } from "./reducers/userReducer"
+import { setShowAlert, setShowLogin } from "./reducers/loginReducer"
+import {
+  setUserList,
+  addUserToList,
+  removeUserFromList
+} from "./reducers/userListReducer"
 
 import { setSocket } from "./reducers/socketReducer"
-import { setUser } from "./reducers/userReducer"
+
 import { connect } from "react-redux"
 
 import { WSPORT, PORT } from "./config"
 
-const App = ({ setUser, setSocket, addMessageToLog }) => {
+const App = ({
+  setSocket,
+  addMessageToLog,
+  setShowAlert,
+  setUser,
+  setShowLogin,
+  addUserToList,
+  removeUserFromList
+}) => {
   const socket = io(PORT)
 
   socket.on("popup", function(msg) {
@@ -40,13 +55,41 @@ const App = ({ setUser, setSocket, addMessageToLog }) => {
     addMessageToLog(user)
   })
 
+  socket.on("USERNAME_ACCEPTED", user => {
+    console.log("user:", user)
+    setUser({ name: user.from, color: user.color })
+    setShowLogin(false)
+    addMessageToLog(user)
+  })
+
+  socket.on("USERNAME_TAKEN", () => {
+    setShowAlert(true)
+    console.log("username taken")
+  })
+
+  socket.on("NEW_USER_CONNECTED", user => {
+    console.log("user:", user)
+    addMessageToLog(user)
+  })
+
+  socket.on("ACTIVE_USERS_ON_CONNECTION", users => {
+    setUserList(users)
+  })
+
   setSocket(socket)
 
   return <Chat></Chat>
 }
 const mapDispatchToProps = {
   setSocket,
+  setUser,
+  setShowAlert,
+  setShowLogin,
   addMessageToLog,
-  setUser
+  setShowAlert,
+  setShowLogin,
+  setUserList,
+  addUserToList,
+  removeUserFromList
 }
 export default connect(null, mapDispatchToProps)(App)
