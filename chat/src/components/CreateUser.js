@@ -24,7 +24,7 @@ const CreateUser = ({ socket, login, setShowLogin, setShowAlert }) => {
       content,
       time,
       type: "USER_JOIN",
-      from: namePlaceHolder,
+      user: namePlaceHolder,
       color
     }
 

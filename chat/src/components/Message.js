@@ -6,7 +6,7 @@ const Message = ({ message }) => {
       <div className="messageElement">
         <span
           style={{ color: message.color }}
-        >{`<${message.time} ${message.from} ${message.content}>`}</span>
+        >{`<${message.time} ${message.user} ${message.content}>`}</span>
       </div>
     )
   }
@@ -14,7 +14,7 @@ const Message = ({ message }) => {
     <div className="messageElement">
       <span
         style={{ color: message.color }}
-      >{`<${message.time} ${message.from}>`}</span>
+      >{`<${message.time} ${message.user}>`}</span>
       <span className="message-content">{message.content}</span>
     </div>
   )

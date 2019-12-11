@@ -23,7 +23,7 @@ const MessagePrompt = ({
     const messageObject = {
       content: message,
       time,
-      from: user.name,
+      user: user.name,
       color: user.color
     }
     addMessageToLog(messageObject)

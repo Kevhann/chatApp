@@ -23,23 +23,24 @@ const App = ({
   setShowAlert,
   setUser,
   setShowLogin,
+  setUserList,
   addUserToList,
   removeUserFromList
 }) => {
   const socket = io(PORT)
 
-  socket.on("popup", function(msg) {
+  socket.on("popup", msg => {
     console.log("hello: ", msg)
   })
-  socket.on("connection", function() {
+  socket.on("connection", () => {
     console.log("client connected")
   })
 
-  socket.on("connect_error", function(err) {
+  socket.on("connect_error", err => {
     console.log("client connect_error: ", err)
   })
 
-  socket.on("connect_timeout", function(err) {
+  socket.on("connect_timeout", err => {
     console.log("client connect_timeout: ", err)
   })
 
@@ -57,9 +58,10 @@ const App = ({
 
   socket.on("USERNAME_ACCEPTED", user => {
     console.log("user:", user)
-    setUser({ name: user.from, color: user.color })
+    setUser({ name: user.user, color: user.color })
     setShowLogin(false)
     addMessageToLog(user)
+    addUserToList(user)
   })
 
   socket.on("USERNAME_TAKEN", () => {
@@ -69,11 +71,16 @@ const App = ({
 
   socket.on("NEW_USER_CONNECTED", user => {
     console.log("user:", user)
+    addUserToList(user)
     addMessageToLog(user)
   })
 
   socket.on("ACTIVE_USERS_ON_CONNECTION", users => {
     setUserList(users)
+  })
+  socket.on("USER_DISCONNECTED", user => {
+    addMessageToLog(user)
+    removeUserFromList(user)
   })
 
   setSocket(socket)

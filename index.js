@@ -13,24 +13,26 @@ var names = {}
 
 io.on("connection", socket => {
   console.log(`CONNECTED user ${active} id ${socket.id}`)
+  console.log("active users on connection", users)
+
   active++
 
-  io.to(socket.id).emit("ACTIVE_USERS_ON_CONNECTION", names)
+  io.to(socket.id).emit("ACTIVE_USERS_ON_CONNECTION", users)
 
   socket.on("SET_NAME_TAG", data => {
     console.log("Joined user:", data)
     console.log("name:", names[socket.id])
 
-    if (users[data.from]) {
-      const message = {
-        ...data,
-        content: "is in use, please choose a different tag",
-        color: "red"
-      }
-      io.to(socket.id).emit("USERNAME_TAKEN", message)
+    if (users[data.user]) {
+      // const message = {
+      //   ...data,
+      //   content: "is in use, please choose a different tag",
+      //   color: "red"
+      // }
+      io.to(socket.id).emit("USERNAME_TAKEN")
     } else {
-      names[socket.id] = data.from
-      users[data.from] = data
+      names[socket.id] = data.user
+      users[data.user] = data
       console.log("else")
       io.to(socket.id).emit("USERNAME_ACCEPTED", data)
       socket.broadcast.emit("NEW_USER_CONNECTED", data)
@@ -48,16 +50,17 @@ io.on("connection", socket => {
     console.log(`user ${active} id ${socket.id} disconnected`)
 
     var disconnectedName = names[socket.id]
-    names[socket.id] = null
+    delete names[socket.id]
 
     if (disconnectedName) {
       var disconnectedUser = users[disconnectedName]
-      users[disconnectedName] = null
+      delete users[disconnectedName]
+      console.log("users:", users)
 
       disconnectedUser.content = "has left the chat"
       console.log("disconnected:", disconnectedUser)
 
-      socket.broadcast.emit("BROADCAST_MESSAGE", disconnectedUser)
+      socket.broadcast.emit("USER_DISCONNECTED", disconnectedUser)
     }
   })
 })
