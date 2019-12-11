@@ -2,6 +2,7 @@ import React from "react"
 import { setMessage } from "../reducers/messageReducer"
 import { addMessageToLog } from "../reducers/messageLogReducer"
 import { connect } from "react-redux"
+import { Modal, Form, Button, Alert } from "react-bootstrap"
 import { getCurrentTimeStamp } from "../utils/utils"
 
 const MessagePrompt = ({
@@ -37,18 +38,16 @@ const MessagePrompt = ({
   }
 
   return (
-    <div>
-      <form>
-        <input
-          placeholder="Send message"
-          autoFocus={true}
+    <Form onSubmit={event => handleMessageSubmit(event)}>
+      <Form.Group>
+        <Form.Control
           type="text"
+          placeholder="Send message"
           value={message}
-          onChange={e => handleMessageChange(e)}
-        ></input>
-        <button onClick={e => handleMessageSubmit(e)}>send</button>
-      </form>
-    </div>
+          onChange={event => handleMessageChange(event)}
+        />
+      </Form.Group>
+    </Form>
   )
 }
 

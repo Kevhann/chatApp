@@ -3,7 +3,6 @@ import React from "react"
 import { connect } from "react-redux"
 import { randomColor, getCurrentTimeStamp } from "../utils/utils"
 import { Modal, Form, Button, Alert } from "react-bootstrap"
-import { setShowAlert, setShowLogin } from "../reducers/loginReducer"
 
 const CreateUser = ({ socket, login, setShowLogin, setShowAlert }) => {
   console.log("login:", login)
