@@ -1,6 +1,8 @@
 export const getCurrentTimeStamp = () => Date().substring(16, 24)
 
 export const randomColor = () => {
+  console.log("generated")
+
   return "hsl(" + 360 * Math.random() + "," + 100 + "%," + 50 + "%)"
 }
 

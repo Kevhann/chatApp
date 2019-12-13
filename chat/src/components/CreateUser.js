@@ -1,18 +1,21 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 
 import { connect } from "react-redux"
 import { randomColor, getCurrentTimeStamp } from "../utils/utils"
-import { Modal, Form, Button, Alert } from "react-bootstrap"
+import { Modal, Form, Button, Alert, Col } from "react-bootstrap"
+import { setUserName } from "../reducers/userReducer"
 
-const CreateUser = ({ socket, login, setShowLogin, setShowAlert }) => {
-  console.log("login:", login)
-  const color = randomColor()
-  let namePlaceHolder = ""
+const CreateUser = ({ socket, login, user, setUserName }) => {
+  const [color, setColor] = useState(null)
+
+  useEffect(() => {
+    setColor(randomColor())
+  }, [])
 
   const handleFormSubmit = event => {
     event.preventDefault()
 
-    if (namePlaceHolder.length < 1) {
+    if (user.user.length < 1) {
       console.log("2short")
       return
     }
@@ -23,7 +26,7 @@ const CreateUser = ({ socket, login, setShowLogin, setShowAlert }) => {
       content,
       time,
       type: "USER_JOIN",
-      user: namePlaceHolder,
+      user: user.user,
       color
     }
 
@@ -31,13 +34,13 @@ const CreateUser = ({ socket, login, setShowLogin, setShowAlert }) => {
   }
 
   const handleFormChange = event => {
-    namePlaceHolder = event.target.value
+    setUserName(event.target.value)
   }
 
   return (
     <Modal
       show={login.showLogin}
-      size="lg"
+      size="md"
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
@@ -48,29 +51,54 @@ const CreateUser = ({ socket, login, setShowLogin, setShowAlert }) => {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={event => handleFormSubmit(event)}>
-          <Form.Group>
-            <Form.Label>Choose nametag</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter tag"
-              onChange={event => handleFormChange(event)}
-            />
-            <Form.Text className="text-muted">Tag must be unique</Form.Text>
-          </Form.Group>
+          <Form.Row>
+            <Col md={7}>
+              <Form.Label>Choose nametag</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter tag"
+                onChange={event => handleFormChange(event)}
+              />
+              <Form.Text className="text-muted">Tag must be unique</Form.Text>
+            </Col>
+            <Form.Group as={Col} md={3} controlId="colorChoiceForm">
+              <Form.Label>Current colour</Form.Label>
+
+              <Button
+                style={{ backgroundColor: color, borderColor: color }}
+                onClick={event => {
+                  setColor(randomColor())
+                }}
+              >
+                Randomize
+              </Button>
+            </Form.Group>
+          </Form.Row>
+          <Form.Row style={{ paddingTop: "10px" }}>
+            <Col>
+              <Button
+                onClick={event => {
+                  handleFormSubmit(event)
+                }}
+              >
+                Choose tag
+              </Button>
+            </Col>
+          </Form.Row>
         </Form>
         <Alert variant="warning" show={login.showAlert}>
           Name already in use
         </Alert>
       </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={event => handleFormSubmit(event)}>Choose tag</Button>
-      </Modal.Footer>
     </Modal>
   )
 }
 const mapStateToProps = state => ({
   socket: state.socketReducer,
-  login: state.loginReducer
+  login: state.loginReducer,
+  user: state.userReducer
 })
 
-export default connect(mapStateToProps)(CreateUser)
+const mapDispatchToProps = { setUserName }
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateUser)

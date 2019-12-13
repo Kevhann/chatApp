@@ -2,6 +2,7 @@ import React, { useEffect } from "react"
 import { connect } from "react-redux"
 import { idGenerator } from "../utils/utils"
 import Message from "./Message"
+import { ListGroup } from "react-bootstrap"
 
 const MessageLog = ({ messageLog }) => {
   useEffect(() => {

@@ -1,4 +1,5 @@
 import React from "react"
+import { ListGroup } from "react-bootstrap"
 
 const Message = ({ message }) => {
   if (message.type === "USER_JOIN") {

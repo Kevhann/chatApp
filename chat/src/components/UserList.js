@@ -7,7 +7,7 @@ const UserList = users => {
       Users connected: {Object.keys(users.users).length}
       <ul>
         {Object.keys(users.users).map(user => (
-          <div>{user}</div>
+          <div key={user}>{user}</div>
         ))}
       </ul>
     </div>
