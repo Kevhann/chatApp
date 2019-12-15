@@ -4,8 +4,9 @@ import { connect } from "react-redux"
 import { randomColor, getCurrentTimeStamp } from "../utils/utils"
 import { Modal, Form, Button, Alert, Col } from "react-bootstrap"
 import { setUserName } from "../reducers/userReducer"
+import { setShowAlert } from "../reducers/loginReducer"
 
-const CreateUser = ({ socket, login, user, setUserName }) => {
+const CreateUser = ({ socket, login, user, setUserName, setShowAlert }) => {
   const [color, setColor] = useState(null)
 
   useEffect(() => {
@@ -15,8 +16,16 @@ const CreateUser = ({ socket, login, user, setUserName }) => {
   const handleFormSubmit = event => {
     event.preventDefault()
 
-    if (user.name.length < 1) {
-      console.log("2short")
+    if (user.name.length < 3) {
+      setShowAlert(true, "Name must be at least 3 characters")
+      return
+    }
+    if (user.name.length > 15) {
+      setShowAlert(true, "Name must be less than 16 characters")
+      return
+    }
+    if (user.name.indexOf(" ") !== -1) {
+      setShowAlert(true, "No whitespace allowed")
       return
     }
 
@@ -85,8 +94,12 @@ const CreateUser = ({ socket, login, user, setUserName }) => {
             </Col>
           </Form.Row>
         </Form>
-        <Alert variant="warning" show={login.showAlert}>
-          Name already in use
+        <Alert
+          variant="warning"
+          show={login.showAlert}
+          style={{ marginTop: 10 }}
+        >
+          {login.alertText}
         </Alert>
       </Modal.Body>
     </Modal>
@@ -98,6 +111,6 @@ const mapStateToProps = state => ({
   user: state.userReducer
 })
 
-const mapDispatchToProps = { setUserName }
+const mapDispatchToProps = { setUserName, setShowAlert }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateUser)

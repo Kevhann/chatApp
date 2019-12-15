@@ -70,7 +70,7 @@ const App = ({
   })
 
   socket.on("USERNAME_TAKEN", () => {
-    setShowAlert(true)
+    setShowAlert(true, "Name already in use")
     console.log("username taken")
   })
 
@@ -104,8 +104,6 @@ const App = ({
 const mapDispatchToProps = {
   setSocket,
   setUser,
-  setShowAlert,
-  setShowLogin,
   addMessageToLog,
   setShowAlert,
   setShowLogin,

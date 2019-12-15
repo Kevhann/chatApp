@@ -23,6 +23,10 @@ io.on("connection", socket => {
     console.log("Joined user:", data)
     console.log("name:", names[socket.id])
 
+    if (data.user.indexOf(" ") !== -1) {
+      return
+    }
+
     if (users[data.user]) {
       io.to(socket.id).emit("USERNAME_TAKEN")
     } else {

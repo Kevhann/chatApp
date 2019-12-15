@@ -1,10 +1,14 @@
 const loginReducer = (
-  state = { showLogin: true, showAlert: false },
+  state = { showLogin: true, showAlert: false, alertText: "" },
   action
 ) => {
   switch (action.type) {
     case "SET_SHOW_ALERT":
-      return { ...state, showAlert: action.value }
+      return {
+        ...state,
+        showAlert: action.show,
+        alertText: action.text
+      }
     case "SET_SHOW_LOGIN":
       return { ...state, showLogin: action.value }
     default:
@@ -12,10 +16,11 @@ const loginReducer = (
   }
 }
 
-export const setShowAlert = value => {
+export const setShowAlert = (show, text) => {
   return {
     type: "SET_SHOW_ALERT",
-    value
+    show,
+    text
   }
 }
 export const setShowLogin = value => {
