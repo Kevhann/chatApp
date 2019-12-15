@@ -1,13 +1,16 @@
 .messageLog {
-  height: 500px;
+  height: 90vh;
   width: 100%;
   overflow-y: scroll;
-  max-width: 40ch;
+  max-width: 100%;
   overflow-wrap: break-word;
   padding-left: 0;
 }
+
 .mainChat {
-  width: max-content;
+  overflow: hidden;
+  overflow-y: hidden;
+  max-height: 100vh;
 }
 
 .messageLog::-webkit-scrollbar {

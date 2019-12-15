@@ -60,7 +60,12 @@ const App = ({
     console.log("user:", user)
     setUser({ name: user.user, color: user.color })
     setShowLogin(false)
-    addMessageToLog(user)
+
+    addMessageToLog({
+      ...user,
+      content: "Joined the chat!",
+      type: "AUTOMATED_MESSAGE"
+    })
     addUserToList(user)
   })
 
@@ -70,16 +75,25 @@ const App = ({
   })
 
   socket.on("NEW_USER_CONNECTED", user => {
-    console.log("user:", user)
+    console.log("new user connected:", user)
     addUserToList(user)
-    addMessageToLog(user)
+    addMessageToLog({
+      ...user,
+      content: "Joined the chat!",
+      type: "AUTOMATED_MESSAGE"
+    })
   })
 
   socket.on("ACTIVE_USERS_ON_CONNECTION", users => {
     setUserList(users)
   })
   socket.on("USER_DISCONNECTED", user => {
-    addMessageToLog(user)
+    console.log("disconnected user:", user)
+    addMessageToLog({
+      ...user,
+      content: "Has left the chat!",
+      type: "AUTOMATED_MESSAGE"
+    })
     removeUserFromList(user)
   })
 

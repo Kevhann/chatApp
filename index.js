@@ -7,9 +7,9 @@ app.use(cors())
 // app.use(express.static("build"))
 const http = require("http").createServer(app)
 const io = require("socket.io")(http)
-var active = 0
-var users = {}
-var names = {}
+let active = 0
+let users = {}
+let names = {}
 
 io.on("connection", socket => {
   console.log(`CONNECTED user ${active} id ${socket.id}`)
@@ -24,15 +24,11 @@ io.on("connection", socket => {
     console.log("name:", names[socket.id])
 
     if (users[data.user]) {
-      // const message = {
-      //   ...data,
-      //   content: "is in use, please choose a different tag",
-      //   color: "red"
-      // }
       io.to(socket.id).emit("USERNAME_TAKEN")
     } else {
       names[socket.id] = data.user
-      users[data.user] = data
+      users[data.user] = { ...data, id: socket.id }
+
       console.log("else")
       io.to(socket.id).emit("USERNAME_ACCEPTED", data)
       socket.broadcast.emit("NEW_USER_CONNECTED", data)
@@ -42,6 +38,25 @@ io.on("connection", socket => {
   socket.on("SENT_MESSAGE", message => {
     console.log("message:", message)
     console.log("from:", socket.id)
+
+    if (message.content.startsWith("@")) {
+      let userNameIndex = message.content.indexOf(" ")
+
+      let userName = message.content.substr(1, userNameIndex - 1)
+      console.log("userName:" + userName + ":")
+      let user = users[userName]
+      console.log("user:", user)
+      if (user) {
+        io.to(user.id).emit("BROADCAST_MESSAGE", {
+          ...message,
+          type: "PRIVATE_MESSAGE",
+          content: message.content.substr(userNameIndex + 1)
+        })
+
+        return
+      }
+    }
+
     socket.broadcast.emit("BROADCAST_MESSAGE", message)
   })
 

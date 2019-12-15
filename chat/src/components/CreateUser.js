@@ -15,18 +15,17 @@ const CreateUser = ({ socket, login, user, setUserName }) => {
   const handleFormSubmit = event => {
     event.preventDefault()
 
-    if (user.user.length < 1) {
+    if (user.name.length < 1) {
       console.log("2short")
       return
     }
 
     const time = getCurrentTimeStamp()
-    const content = "Joined the chat"
+
     const message = {
-      content,
       time,
-      type: "USER_JOIN",
-      user: user.user,
+
+      user: user.name,
       color
     }
 

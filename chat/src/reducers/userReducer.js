@@ -1,9 +1,9 @@
-const userReducer = (state = { user: "" }, action) => {
+const userReducer = (state = { name: "" }, action) => {
   switch (action.type) {
     case "SET_USER":
       return action.value
     case "SET_USER_NAME":
-      return { ...state, user: action.value }
+      return { ...state, name: action.value }
     default:
       return state
   }

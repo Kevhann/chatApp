@@ -38,7 +38,10 @@ const MessagePrompt = ({
   }
 
   return (
-    <Form onSubmit={event => handleMessageSubmit(event)}>
+    <Form
+      onSubmit={event => handleMessageSubmit(event)}
+      className="messagePrompt"
+    >
       <Form.Group>
         <Form.Control
           type="text"
